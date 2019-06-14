@@ -40,6 +40,7 @@ export default class CustomerInformationWebPart extends BaseClientSideWebPart<IC
 this._renderListDataAsync();
   }
 
+  // Get List Items Method
   private _getListCustomerData():Promise<ISPListCustomers>
 {
 return this.context.spHttpClient.get(this.context.pageContext.web.absoluteUrl+
