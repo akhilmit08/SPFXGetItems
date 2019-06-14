@@ -9,6 +9,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 
 import styles from './CustomerInformationWebPart.module.scss';
 import * as strings from 'CustomerInformationWebPartStrings';
+import { SPHttpClient, SPHttpClientResponse } from '@microsoft/sp-http';
 
 export interface ICustomerInformationWebPartProps {
   description: string;
@@ -32,22 +33,49 @@ export default class CustomerInformationWebPart extends BaseClientSideWebPart<IC
 
   public render(): void {
     this.domElement.innerHTML = `
-      <div class="${ styles.customerInformation }">
-        <div class="${ styles.container }">
-          <div class="${ styles.row }">
-            <div class="${ styles.column }">
-              <span class="${ styles.title }">Welcome to SharePoint!</span>
-              <p class="${ styles.subTitle }">Customize SharePoint experiences using Web Parts.</p>
-              <p class="${ styles.description }">${escape(this.properties.description)}</p>
-              <a href="https://aka.ms/spfx" class="${ styles.button }">
-                <span class="${ styles.label }">Learn more</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>`;
+                <div class="${ styles.container }">
+                  <div id="spListContainer"/>
+                  </div>
+                `;
+this._renderListDataAsync();
   }
 
+  private _getListCustomerData():Promise<ISPListCustomers>
+{
+return this.context.spHttpClient.get(this.context.pageContext.web.absoluteUrl+
+`/_api/web/lists/GetByTitle('Customers')/Items`,SPHttpClient.configurations.v1).
+then((responseListCustomer:SPHttpClientResponse)=>{
+       return responseListCustomer.json();
+});
+}
+
+private _renderListCustomer(items:ISPListCustomerItem[]):void
+{
+let html:string=`<table width='100%' border=1>`;
+html+=`<thead><th>ID</th><th>Name</th><th>Address</th><th>Type</th><th>Author</th>
+<th>Lookup</th>`+
+`</thead><tbody>`;
+items.forEach((item:ISPListCustomerItem)=>
+{
+html+= `<tr><td>${item.CustomerID}</td>
+<td>${item.CustomerName}</td>
+<td>${item.CustomerAddress}</td>
+<td>${item.CustomerType}</td>
+
+</tr>`;
+});
+html+=`</tbody></table>`;
+const listContainer:Element=this.domElement.querySelector("#spListContainer");
+listContainer.innerHTML=html;
+}
+
+private _renderListDataAsync():void
+{
+this._getListCustomerData().then((response)=>
+{
+this._renderListCustomer(response.value);
+});
+}
   protected get dataVersion(): Version {
     return Version.parse('1.0');
   }
