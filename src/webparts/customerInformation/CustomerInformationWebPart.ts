@@ -53,8 +53,8 @@ then((responseListCustomer:SPHttpClientResponse)=>{
 private _renderListCustomer(items:ISPListCustomerItem[]):void
 {
 let html:string=`<table width='100%' border=1>`;
-html+=`<thead><th>ID</th><th>Name</th><th>Address</th><th>Type</th>
-`+
+html+=`<thead><th>ID</th><th>Name</th><th>Address</th><th>Type</th><th>Author</th>
+<th>Lookup</th>`+
 `</thead><tbody>`;
 items.forEach((item:ISPListCustomerItem)=>
 {
