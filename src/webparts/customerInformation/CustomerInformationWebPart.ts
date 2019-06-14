@@ -4,6 +4,7 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-webpart-base';
+
 import { escape } from '@microsoft/sp-lodash-subset';
 
 import styles from './CustomerInformationWebPart.module.scss';
@@ -12,6 +13,20 @@ import * as strings from 'CustomerInformationWebPartStrings';
 export interface ICustomerInformationWebPartProps {
   description: string;
 }
+
+
+  export interface ISPListCustomers{
+  value:ISPListCustomerItem[];
+  }
+
+  export interface ISPListCustomerItem{
+    Title:string;
+    CustomerID:string;
+    CustomerName:string;
+    CustomerAddress:string;
+    CustomerType:string;
+    
+    }
 
 export default class CustomerInformationWebPart extends BaseClientSideWebPart<ICustomerInformationWebPartProps> {
 
